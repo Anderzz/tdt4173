@@ -23,11 +23,7 @@ class LogisticRegression:
                 m binary 0.0/1.0 labels
         """
         #setup
-        if X.ndim == 1:
-            n = 1
-        else:
-            n = X.shape[1]
-        m = X.shape[0]
+        m, n = X.shape
         X = np.array(X)
         y = np.array(y)
         self.w = np.zeros(n)
