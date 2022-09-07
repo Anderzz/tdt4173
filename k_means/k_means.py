@@ -1,15 +1,15 @@
 import numpy as np 
 import pandas as pd 
+import random
 # IMPORTANT: DO NOT USE ANY OTHER 3RD PARTY PACKAGES
 # (math, random, collections, functools, etc. are perfectly fine)
 
 
 class KMeans:
     
-    def __init__(self):
-        # NOTE: Feel free add any hyperparameters 
-        # (with defaults) as you see fit
-        pass
+    def __init__(self, n_clusters=2, max_iter = 2000):
+        self.n_clusters = n_clusters
+        self.max_iter = max_iter
         
     def fit(self, X):
         """
@@ -19,8 +19,28 @@ class KMeans:
             X (array<m,n>): a matrix of floats with
                 m rows (#samples) and n columns (#features)
         """
-        # TODO: Implement
-        raise NotImplementedError()
+        #self.centroids = np.random.rand(self.n_clusters, X.shape[1])
+        # min_, max_ = np.min(X, axis=0), np.max(X, axis=0)
+        # self.centroids = np.array([random.uniform(min_, max_) for _ in range(self.n_clusters)])
+        #randomly initialize centroids
+        self.centroids = np.random.uniform(np.min(X, axis=0), np.max(X, axis=0), (self.n_clusters, X.shape[1]))
+        prev_centroids = np.zeros(self.centroids.shape)
+        for iter in range(self.max_iter):
+            if np.equal(self.centroids, prev_centroids).any():
+                print(f"Converged after {iter} iterations")
+                break
+
+            sorted_points = [[] for _ in range(self.n_clusters)]
+            for x in X.values:
+                dists = euclidean_distance(x, self.centroids)
+                best_centroid = np.argmin(dists)
+                sorted_points[best_centroid].append(x)
+                self.ctrd_map = sorted_points
+
+            prev_centroids = self.centroids
+            for i in range(self.n_clusters):
+                self.centroids[i] = np.mean(sorted_points[i], axis=0)
+            
     
     def predict(self, X):
         """
@@ -38,8 +58,14 @@ class KMeans:
             there are 3 clusters, then a possible assignment
             could be: array([2, 0, 0, 1, 2, 1, 1, 0, 2, 2])
         """
-        # TODO: Implement 
-        raise NotImplementedError()
+        #return the cluster assignemnts for each point in X
+        #return np.zeros(X.shape[0])
+        res = []
+        for x in X.values:
+            dists = euclidean_distance(x, self.centroids)
+            best_centroid = np.argmin(dists)
+            res.append(best_centroid)
+        return np.array(res)
     
     def get_centroids(self):
         """
@@ -56,8 +82,7 @@ class KMeans:
             [xm_1, xm_2, ..., xm_n]
         ])
         """
-        # TODO: Implement 
-        raise NotImplementedError()
+        return self.centroids
     
     
     
