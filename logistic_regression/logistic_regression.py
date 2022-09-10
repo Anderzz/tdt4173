@@ -12,7 +12,7 @@ class LogisticRegression:
         self.losses = None
         self.C = 0.1
         
-    def fit(self, X, y, lr=0.01, batch_size = 16, epochs=1500, verbose=False):
+    def fit(self, X, y, lr=0.01, batch_size = 16, epochs=100, verbose=False):
         """
         Estimates parameters for the classifier with mini-batch gradient descent
         
@@ -46,8 +46,7 @@ class LogisticRegression:
                 self.w = self.w - lr * dldw
                 self.b = self.b - lr * dldb
             #compute loss and append to list
-            z = np.einsum('ij,j->i', X, self.w) + self.b
-            y_pred = sigmoid(z)
+            y_pred = self.predict(X)
             loss = binary_cross_entropy(y, y_pred)
             self.losses.append(loss)
             if verbose:
