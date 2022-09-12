@@ -40,7 +40,7 @@ class KMeans:
             loss = 0
             z = self.predict(X)
             #use a self-made "loss" function that combines the silhouette score and the distortion
-            loss = 9*1-(euclidean_silhouette(X, z)) + euclidean_distortion(X, z)
+            loss = 1-(euclidean_silhouette(X, z)) + euclidean_distortion(X, z)
             #check if this is the best run
             if loss < best_loss:
                 best_loss = loss
