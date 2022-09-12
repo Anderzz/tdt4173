@@ -7,7 +7,7 @@ import random
 
 class KMeans:
     
-    def __init__(self, n_clusters=2, max_iter = 20):
+    def __init__(self, n_clusters=2, max_iter = 50):
         self.n_clusters = n_clusters
         self.max_iter = max_iter
         
@@ -22,11 +22,13 @@ class KMeans:
         #run everything 10 times and pick the best one
         best_centroids = None
         best_loss = np.inf
-        for _ in range(10):
+        for _ in range(20):
             #randomly initialize centroids
             self.centroids = X.sample(n=self.n_clusters).values
             #run the algorithm
             for _ in range(self.max_iter):
+                #add break condition
+                old_centroids = self.centroids.copy()
                 #assign points to clusters
                 clusters = [[] for _ in range(self.n_clusters)]
                 for x in X.values:
@@ -36,6 +38,9 @@ class KMeans:
                 #update centroids
                 for k, cluster in enumerate(clusters):
                     self.centroids[k] = np.mean(cluster, axis=0)
+                #check for convergence
+                if np.allclose(old_centroids, self.centroids):
+                    break
             #set the current loss as a combination of the silhouette score and the distortion
             loss = 0
             z = self.predict(X)
